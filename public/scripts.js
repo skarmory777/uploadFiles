@@ -17,13 +17,45 @@ async function loadFiles() {
   });
 }
 
-document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+document.getElementById("uploadForm").addEventListener("submit", (e) => {
   e.preventDefault();
-  const formData = new FormData(e.target);
 
-  await fetch("/upload", { method: "POST", body: formData });
-  e.target.reset();
-  loadFiles();
+  const fileInput = e.target.querySelector("input[type=file]");
+  if (!fileInput.files.length) return;
+
+  const formData = new FormData();
+  formData.append("file", fileInput.files[0]);
+
+  const xhr = new XMLHttpRequest();
+  const progressContainer = document.getElementById("progressContainer");
+  const progressBar = document.getElementById("progressBar");
+
+  progressContainer.style.display = "block";
+  progressBar.style.width = "0%";
+  progressBar.textContent = "0%";
+
+  xhr.upload.addEventListener("progress", (event) => {
+    if (event.lengthComputable) {
+      const percent = Math.round((event.loaded / event.total) * 100);
+      progressBar.style.width = percent + "%";
+      progressBar.textContent = percent + "%";
+    }
+  });
+
+  xhr.open("POST", "/upload");
+  xhr.onload = () => {
+    if (xhr.status === 200) {
+      progressBar.style.width = "100%";
+      progressBar.textContent = "100%";
+      loadFiles();
+    } else {
+      alert("Erro no upload: " + xhr.responseText);
+    }
+    fileInput.value = "";
+    setTimeout(() => (progressContainer.style.display = "none"), 1500);
+  };
+
+  xhr.send(formData);
 });
 
 async function deleteFile(name) {
@@ -31,5 +63,4 @@ async function deleteFile(name) {
   loadFiles();
 }
 
-// Carregar lista inicial
 loadFiles();
