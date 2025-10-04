@@ -1,0 +1,31 @@
+{
+  "name": "uploadfiles",
+  "version": "1.0.0",
+  "description": "upload de arquivos com nodejs, express e multer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skarmory777/uploadFiles.git"
+  },
+  "keywords": [
+    "upload",
+    "files",
+    "express",
+    "nodejs",
+    "multer"
+  ],
+  "author": "Edson de Melo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/skarmory777/uploadFiles/issues"
+  },
+  "homepage": "https://github.com/skarmory777/uploadFiles#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "multer": "^2.0.2"
+  }
+}
