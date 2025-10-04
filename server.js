@@ -64,6 +64,8 @@ app.delete("/files/:name", (req, res) => {
   });
 });
 
+app.use("/meus-arquivos", express.static("uploads"));
+
 app.listen(PORT, () =>
   console.log(`🚀 Servidor rodando em http://localhost:${PORT}`)
 );
