@@ -20,7 +20,12 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + "-" + file.originalname);
   },
 });
-const upload = multer({ storage });
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 800 * 1024 * 1024, // 10 MB
+  },
+});
 
 // Criar pasta uploads se não existir
 if (!fs.existsSync("uploads")) {
@@ -28,8 +33,18 @@ if (!fs.existsSync("uploads")) {
 }
 
 // Upload de arquivo
-app.post("/upload", upload.single("file"), (req, res) => {
-  res.json({ message: "Arquivo enviado com sucesso!" });
+app.post("/upload", (req, res) => {
+  upload.single("file")(req, res, function (err) {
+    if (err) {
+      if (err.code === "LIMIT_FILE_SIZE") {
+        return res
+          .status(400)
+          .json({ error: "Arquivo muito grande! Limite: 800 MB" });
+      }
+      return res.status(500).json({ error: err.message });
+    }
+    res.json({ message: "Arquivo enviado com sucesso!" });
+  });
 });
 
 // Listar arquivos
